@@ -1,0 +1,46 @@
+param (
+    [Parameter(Mandatory)]
+    [string]$FlavorID,
+
+    [Parameter(Mandatory)]
+    [string]$BuildPhase,
+
+    [Parameter(Mandatory)]
+    [string]$Environment,
+
+    [switch]$TestContract
+)
+
+try {
+    Import-Module ./Modules/Logging.psm1 -Force
+    Import-Module ./Modules/Validation.psm1 -Force
+
+    Write-Log -Level "Info" -Event "BuildStarted" -Fields @{
+        FlavorID = $FlavorID
+        BuildPhase = $BuildPhase
+        Environment = $Environment
+        Mode = if ($TestContract) { "ContractTest" } else { "NormalBuild" }
+    }
+
+    $validation = Run -ValidationLevel "Standard"
+
+    $manifest = @{
+        Mode = if ($TestContract) { "ContractTest" } else { "NormalBuild" }
+        FlavorID = $FlavorID
+        Environment = $Environment
+        BuildPhase = $BuildPhase
+        ValidationSummary = $validation
+        TimestampEnd = (Get-Date).ToString("o")
+    }
+
+    $manifest | ConvertTo-Json -Depth 5 | Out-File build-manifest.json
+
+    exit 0
+}
+catch {
+    Write-Log -Level "CriticalFailure" -Event "UnhandledException" -Fields @{
+        Message = $_.Exception.Message
+        StackTrace = $_.Exception.StackTrace
+    }
+    exit 1
+}

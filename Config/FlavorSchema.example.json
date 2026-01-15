@@ -1,0 +1,10 @@
+{
+  "FlavorID": "Template",
+  "ParentFlavorID": null,
+  "Modules": ["Template"],
+  "ValidationPolicy": {
+    "MandatoryCategories": ["ServiceState"],
+    "OptionalCategories": ["ArtifactIntegrity"],
+    "Checks": []
+  }
+}

@@ -1,0 +1,35 @@
+name: Golden AMI Orchestrator – Contract Test
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  contract-test:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify PowerShell environment
+        shell: pwsh
+        run: |
+          $PSVersionTable
+
+      - name: Run Golden AMI Contract Test
+        shell: pwsh
+        run: |
+          Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
+          ./Invoke-AMIBuild.ps1 `
+            -FlavorID Template `
+            -BuildPhase ParentBuild `
+            -Environment UAT `
+            -TestContract
+
+      - name: Upload build manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-manifest
+          path: build-manifest.json

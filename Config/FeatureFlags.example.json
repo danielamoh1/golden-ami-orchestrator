@@ -1,0 +1,6 @@
+{
+  "EnableHardening": false,
+  "EnableValidation": true,
+  "EnableSeal": true,
+  "EnableSecuritySuppressionHooks": false
+}

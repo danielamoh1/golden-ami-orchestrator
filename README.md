@@ -49,22 +49,25 @@ This repository implements **structure and contracts only** — not final AMI lo
 > *The diagram below illustrates the orchestration flow, module boundaries, and CI scope.*
 
 flowchart TD
-    A[GitHub Actions windows-latest runner] -->|CI / Contract Test Only| B[Invoke-AMIBuild.ps1]
+    A["GitHub Actions<br/>windows-latest runner"]
+    B["Invoke-AMIBuild.ps1"]
 
-    B --> C[Parameter Parsing FlavorID / BuildPhase / Environment]
-    C --> D[InitializeBuildEnvironment]
-    D --> E[PreBuildChecks]
-    E --> F[BaselineConfiguration Hardening Placeholder]
-    F --> G[FlavorModules Dispatcher Template Only]
-    G --> H[RebootCoordination Placeholder]
-    H --> I[ValidationGate Policy-Driven Placeholder]
-    I --> J[Cleanup Placeholder]
-    J --> K[SealPhase Finalize Placeholder]
+    A -->|"CI / Contract Test Only"| B
 
-    K --> L[Build Manifest build-manifest.json]
+    B --> C["Parameter Parsing<br/>FlavorID / BuildPhase / Environment"]
+    C --> D["InitializeBuildEnvironment"]
+    D --> E["PreBuildChecks"]
+    E --> F["BaselineConfiguration<br/>(Hardening Placeholder)"]
+    F --> G["FlavorModules Dispatcher<br/>(Template Only)"]
+    G --> H["RebootCoordination<br/>(Placeholder)"]
+    H --> I["ValidationGate<br/>(Policy-Driven Placeholder)"]
+    I --> J["Cleanup<br/>(Placeholder)"]
+    J --> K["SealPhase<br/>(Finalize Placeholder)"]
 
-    B --> M[State Checkpointing State/state.json]
-    M -->|ResumeFromCheckpoint| B
+    K --> L["Build Manifest<br/>build-manifest.json"]
+
+    B --> M["State Checkpointing<br/>State/state.json"]
+    M -->|"ResumeFromCheckpoint"| B
 
     subgraph Modules
         F
@@ -74,16 +77,17 @@ flowchart TD
         K
     end
 
-    subgraph CI Scope
+    subgraph CI_Scope["CI Scope"]
         A
     end
 
-    subgraph Future Execution Environment
-        N[Pipeline with Reboot Support AWS – TBD]
+    subgraph Future_Execution["Future Execution Environment"]
+        N["Pipeline with Reboot Support<br/>(AWS – TBD)"]
     end
 
     H -.-> N
     N -.-> B
+
 ---
 
 ## GitHub Actions Usage

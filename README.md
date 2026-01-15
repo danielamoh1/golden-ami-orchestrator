@@ -48,6 +48,9 @@ This repository implements **structure and contracts only** — not final AMI lo
 
 > *The diagram below illustrates the orchestration flow, module boundaries, and CI scope.*
 
+## Architecture Diagram
+
+```mermaid
 flowchart TD
     A["GitHub Actions<br/>windows-latest runner"]
     B["Invoke-AMIBuild.ps1"]
@@ -87,7 +90,7 @@ flowchart TD
 
     H -.-> N
     N -.-> B
-
+```
 ---
 
 ## GitHub Actions Usage

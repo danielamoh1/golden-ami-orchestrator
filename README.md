@@ -107,8 +107,8 @@ Reboot-capable execution will be finalized once AWS ProServe confirms supported 
 
 ## Status
 
-* ✔ Skeleton framework complete
-* ✔ Architecture-review ready
-* ✔ Pipeline-agnostic
+*  Skeleton framework complete
+*  Architecture-review ready
+*  Pipeline-agnostic
 
 **No further work is required at this phase.**

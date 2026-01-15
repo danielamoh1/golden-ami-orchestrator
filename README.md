@@ -6,7 +6,7 @@ This repository contains the **Golden AMI Orchestrator skeleton** for the **Equi
 
 It provides a **stable, extensible, and pipeline-agnostic orchestration framework** for Golden AMI builds while intentionally deferring environment- and vendor-specific behavior until validated inputs are provided.
 
-This repository implements **structure and contracts only** — not final AMI logic.
+This repository implements **structure and contracts only** , not final AMI logic.
 
 ---
 

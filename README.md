@@ -1,19 +1,10 @@
-Absolutely — what you pasted looks like it was copied from a **commented / escaped Markdown block**, which is why it’s ugly.
-
-Below is a **clean, professional, copy-paste ready `README.md`** with **proper Markdown**, no escaping, no stray `#`, and review-friendly formatting.
-
-You can replace your README with this **as-is**.
-
----
-
 # Golden AMI Orchestrator (Skeleton Framework)
 
 ## Overview
 
-This repository contains the **Golden AMI Orchestrator skeleton** for the
-**Equifax AWACS / Vine migration program**.
+This repository contains the **Golden AMI Orchestrator skeleton** for the **Equifax AWACS / Vine migration program**.
 
-The purpose of this implementation is to provide a **stable, extensible, and pipeline-agnostic orchestration framework** for building Golden AMIs across multiple flavors, while intentionally deferring environment- and vendor-specific behavior until validated inputs are provided.
+It provides a **stable, extensible, and pipeline-agnostic orchestration framework** for Golden AMI builds while intentionally deferring environment- and vendor-specific behavior until validated inputs are provided.
 
 This repository implements **structure and contracts only** — not final AMI logic.
 
@@ -23,26 +14,24 @@ This repository implements **structure and contracts only** — not final AMI lo
 
 * Parameter-driven execution
 * No AWS-, Equifax-, or vendor-specific assumptions
-* No hardcoded secrets, endpoints, or agent behavior
+* No hardcoded secrets or endpoints
 * Idempotent where feasible
-* Explicit failure on unrecoverable errors
 * Additive future changes (no rewrites)
 
 ---
 
 ## What Is Implemented
 
-### ✔ Orchestration Entry Point
-
-* `Invoke-AMIBuild.ps1` with required and optional parameters
-* Global error handling with structured logging
-* Deterministic execution flow
+* Single orchestration entry point (`Invoke-AMIBuild.ps1`)
+* Deterministic execution flow (placeholder steps)
+* Structured logging and build manifest
+* Resume checkpointing (skeleton)
+* SentinelOne handling hooks (placeholders)
+* Contract test mode for CI validation
 
 ---
 
-### ✔ Execution Flow Skeleton
-
-The orchestrator executes the following steps in order (placeholders only):
+## Execution Flow (Skeleton)
 
 1. InitializeBuildEnvironment
 2. PreBuildChecks
@@ -53,92 +42,59 @@ The orchestrator executes the following steps in order (placeholders only):
 7. Cleanup
 8. SealPhase
 
-Each step emits structured logs and writes execution checkpoints.
-
 ---
 
-### ✔ Contract Test Mode
+## Architecture Diagram
 
-When executed with `-TestContract`, the orchestrator:
+> *The diagram below illustrates the orchestration flow, module boundaries, and CI scope.*
 
-* Validates parameter parsing
-* Loads all modules
-* Parses schemas and feature flags
-* Emits structured logs
-* Emits a build manifest
-* Performs **no installs, reboots, or destructive actions**
+flowchart TD
+    A[GitHub Actions windows-latest runner] -->|CI / Contract Test Only| B[Invoke-AMIBuild.ps1]
 
-This mode is designed for CI validation and architecture review.
+    B --> C[Parameter Parsing FlavorID / BuildPhase / Environment]
+    C --> D[InitializeBuildEnvironment]
+    D --> E[PreBuildChecks]
+    E --> F[BaselineConfiguration Hardening Placeholder]
+    F --> G[FlavorModules Dispatcher Template Only]
+    G --> H[RebootCoordination Placeholder]
+    H --> I[ValidationGate Policy-Driven Placeholder]
+    I --> J[Cleanup Placeholder]
+    J --> K[SealPhase Finalize Placeholder]
 
----
+    K --> L[Build Manifest build-manifest.json]
 
-### ✔ Resume Semantics (Skeleton)
+    B --> M[State Checkpointing State/state.json]
+    M -->|ResumeFromCheckpoint| B
 
-* Execution checkpoints are written to `State/state.json`
-* Resume logic is implemented via `-ResumeFromCheckpoint`
-* The exact reboot/resume mechanism is intentionally deferred pending AWS ProServe confirmation
+    subgraph Modules
+        F
+        G
+        H
+        I
+        K
+    end
 
-This satisfies the current skeleton requirements without premature pipeline coupling.
+    subgraph CI Scope
+        A
+    end
 
----
+    subgraph Future Execution Environment
+        N[Pipeline with Reboot Support AWS – TBD]
+    end
 
-### ✔ SentinelOne Handling Hooks
-
-The following placeholder hooks exist with **no assumptions**:
-
-* `DetectBuildSuppressionSignal`
-* `SuppressSecurityAgent`
-* `RestoreSecurityAgent`
-
-Actual behavior will be implemented only after Equifax provides validated run-tag definitions.
-
----
-
-### ✔ Build Manifest
-
-Each run emits a `build-manifest.json` containing:
-
-* Execution mode (`NormalBuild` / `ContractTest`)
-* Flavor, environment, and phase metadata
-* Timestamps and duration
-* Validation summary
-* Reboot and security suppression status
-
-This manifest serves as the authoritative execution receipt.
-
+    H -.-> N
+    N -.-> B
 ---
 
 ## GitHub Actions Usage
 
-This repository uses **GitHub Actions** for **contract validation only**.
+GitHub Actions is used **only for contract validation** (`-TestContract`).
 
-### What GitHub Actions Does
+* Validates parameters, module loading, and logging
+* Emits and stores the build manifest
+* Does **not** perform AMI builds or handle reboots
 
-* Runs `-TestContract`
-* Verifies module loading and logging
-* Uploads the build manifest as an artifact
-
-### What GitHub Actions Does NOT Do
-
-* Perform AMI builds
-* Handle Windows reboots
-* Resume execution after reboot
-
-This is intentional. GitHub-hosted runners cannot survive reboots.
-The final execution environment (including reboot support and self-hosted runners) will be finalized once AWS ProServe confirms pipeline requirements.
-
----
-
-## Future Work (Explicitly Deferred)
-
-The following items are intentionally out of scope until inputs are confirmed:
-
-* Final reboot/resume mechanism
-* Self-hosted runner requirements
-* Flavor-specific module logic
-* Validation rule enforcement
-* SentinelOne suppression logic
-* AWS pipeline integration details
+Reboot-capable execution will be finalized once AWS ProServe confirms supported pipeline behavior.
 
 ---
 
@@ -147,8 +103,5 @@ The following items are intentionally out of scope until inputs are confirmed:
 * ✔ Skeleton framework complete
 * ✔ Architecture-review ready
 * ✔ Pipeline-agnostic
-* ✔ Safe to extend once requirements land
 
 **No further work is required at this phase.**
-
-But this version is already **clean, professional, and review-safe**.
